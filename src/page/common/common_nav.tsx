@@ -1,7 +1,7 @@
 import "./common_nav.sass"
 import {Container, Nav, Navbar} from "react-bootstrap";
 import {GetLoginData} from "./login_data";
-import {CommonGetRequest, Member} from "../../api/pb/goodguy_web_pb";
+import {CommonGetRequest, Member} from "../../api/pb/goodguy-web_pb";
 import State from "../../util/state";
 import {CommonGet} from "../../api/web/admin";
 

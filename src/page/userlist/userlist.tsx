@@ -4,7 +4,7 @@ import CommonNav from "../common/common_nav";
 import queryString from "query-string";
 import GetMember from "../../api/web/get_member";
 import {useState} from "react";
-import {Member} from "../../api/pb/goodguy_web_pb";
+import {Member} from "../../api/pb/goodguy-web_pb";
 import {Table, Pagination} from "react-bootstrap";
 import GetUserContestRecord from "../../api/crawler/get_user_contest_record";
 import State from "../../util/state";

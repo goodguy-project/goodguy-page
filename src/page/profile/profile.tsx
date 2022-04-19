@@ -1,7 +1,7 @@
 import queryString from "query-string";
 import {RedirectToIndex} from "../common/common";
 import {useState} from "react";
-import {Member} from "../../api/pb/goodguy_web_pb";
+import {Member} from "../../api/pb/goodguy-web_pb";
 import State, {Status} from "../../util/state";
 import GetMember from "../../api/web/get_member";
 import CommonNav from "../common/common_nav";

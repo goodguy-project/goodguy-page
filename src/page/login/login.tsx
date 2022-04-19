@@ -1,5 +1,5 @@
 import CommonNav from "../common/common_nav";
-import {LoginRequest} from "../../api/pb/goodguy_web_pb";
+import {LoginRequest} from "../../api/pb/goodguy-web_pb";
 import {PopupElement, Popup} from "../common/alert";
 import {Button} from "react-bootstrap";
 import Login from "../../api/web/login";

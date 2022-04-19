@@ -1,4 +1,4 @@
-import {Bool, Member} from "../../api/pb/goodguy_web_pb";
+import {Bool, Member} from "../../api/pb/goodguy-web_pb";
 
 export default function ConstructMember(
     sid?: string, name?: string, school?: string, grade?: string, clazz?: string, email?: string, codeforces?: string,

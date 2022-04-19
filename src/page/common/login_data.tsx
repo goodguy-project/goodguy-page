@@ -1,4 +1,4 @@
-import {Member} from "../../api/pb/goodguy_web_pb";
+import {Member} from "../../api/pb/goodguy-web_pb";
 import {useState} from "react";
 import GetMember from "../../api/web/get_member";
 import {GetToken} from "../../api/web/common";

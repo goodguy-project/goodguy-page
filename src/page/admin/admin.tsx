@@ -4,7 +4,7 @@ import {RedirectToIndex} from "../common/common";
 import CommonNav from "../common/common_nav";
 import State, {Status} from "../../util/state";
 import {Button, FormControl, Table} from "react-bootstrap";
-import {AdminGetRequest, AdminGetResponse, EmailConf, Op} from "../../api/pb/goodguy_web_pb";
+import {AdminGetRequest, AdminGetResponse, EmailConf, Op} from "../../api/pb/goodguy-web_pb";
 import {ChangeEvent, useState} from "react";
 import {AdminGet, AdminSet} from "../../api/web/admin";
 import {PopupElement} from "../common/alert";

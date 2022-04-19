@@ -1,6 +1,6 @@
 import CommonNav from "../common/common_nav";
 import {useState} from "react";
-import {UpdateMemberRequest} from "../../api/pb/goodguy_web_pb";
+import {UpdateMemberRequest} from "../../api/pb/goodguy-web_pb";
 import ConstructMember from "../common/member";
 import {GetInputGroup} from "../common/input";
 import {GetLoginData} from "../common/login_data";

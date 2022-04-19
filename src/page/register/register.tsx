@@ -1,6 +1,6 @@
 import CommonNav from "../common/common_nav";
 import {useState} from "react";
-import {RegisterRequest} from "../../api/pb/goodguy_web_pb";
+import {RegisterRequest} from "../../api/pb/goodguy-web_pb";
 import {GetInputGroup} from "../common/input";
 import {PopupElement} from "../common/alert";
 import {Button} from "react-bootstrap";
