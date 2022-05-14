@@ -1,6 +1,8 @@
-import {GoodguyWebServiceClient} from "../pb/goodguy_web_grpc_web_pb";
+import {GoodguyWebServiceClient} from "../pb/goodguy-web_grpc_web_pb";
+import {useEffect, useState} from "react";
+import {CheckTokenRequest} from "../pb/goodguy-web_pb";
 
-const hostname = 'http://127.0.0.1:9888';
+const hostname = 'http://127.0.0.1:9853';
 export const WebClient = new GoodguyWebServiceClient(hostname);
 
 const TokenKeyName = 'goodguy-web-token';
@@ -15,6 +17,23 @@ export function GetToken(): string | undefined {
         return undefined;
     }
     return token;
+}
+
+export function GetSid(): string {
+    const [sid, setSid] = useState('');
+    useEffect(() => {
+        const token = GetToken();
+        if (token !== undefined) {
+            const request = new CheckTokenRequest();
+            request.setToken(token);
+            WebClient.checkToken(request, {}, (err, response) => {
+                if (!err && response.getOk()) {
+                    setSid(response.getSid());
+                }
+            });
+        }
+    }, []);
+    return sid;
 }
 
 export function RemoveToken() {
