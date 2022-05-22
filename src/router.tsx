@@ -1,8 +1,8 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import React from "react";
-import Index from "./page/index";
-import UserList from "./page/userlist/userlist";
-import Profile from "./page/profile/profile";
+import Index from "./page";
+import UserList from "./page/userlist";
+import Profile from "./page/profile";
 
 export default function Router(): JSX.Element {
     return (

@@ -1,13 +1,13 @@
-import Nav from "../nav/nav";
+import Nav from "./nav";
 import {Box, Button, Card, CardActions, CardContent, CardProps, LinearProgress, Typography} from "@mui/material";
-import {CrawlClient} from "../../api/crawler/client";
+import {CrawlClient} from "../api/crawler/client";
 import {useEffect, useState} from "react";
 import {
     GetDailyQuestionRequest,
     GetDailyQuestionResponse,
     MGetRecentContestRequest,
     RecentContest
-} from "../../api/pb/crawl_service_pb";
+} from "../api/pb/crawl_service_pb";
 
 type CardParam = {
     element: JSX.Element
@@ -114,7 +114,6 @@ function RecentContestCard(): CardParam[] {
     const now = Date.now() / 1000 | 0;
     const cards: CardParam[] = [];
     if (recentContest !== undefined) {
-        let cnt = 1;
         for (const pf of recentContest) {
             const platform = pf.getPlatform();
             // const color = 'rgba(17,164,244)'; TODO backgroud color
@@ -154,7 +153,7 @@ function RecentContestCard(): CardParam[] {
                     ),
                     priority: priority,
                     date: rc.getTimestamp().toString(),
-                })
+                });
             }
         }
     } else {
@@ -171,14 +170,12 @@ function RecentContestCard(): CardParam[] {
                 </>
             ),
             priority: 90,
-        })
+        });
     }
     return cards;
 }
 
-type IndexProps = {};
-
-export default function Index(props: IndexProps): JSX.Element {
+export default function Index(props: {}): JSX.Element {
     document.title = "首页";
     return (
         <Nav open={false} header={"首页"}>

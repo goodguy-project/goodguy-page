@@ -25,8 +25,8 @@ import {
     DialogTitle,
     TextField
 } from "@mui/material";
-import {GetSid, RemoveToken, SaveToken, WebClient} from "../../api/web/common";
-import {LoginRequest, Member, RegisterRequest} from "../../api/pb/goodguy-web_pb";
+import {GetSid, RemoveToken, SaveToken, WebClient} from "../api/web/common";
+import {LoginRequest, Member, RegisterRequest} from "../api/pb/goodguy-web_pb";
 import CloseIcon from '@mui/icons-material/Close';
 
 const wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');

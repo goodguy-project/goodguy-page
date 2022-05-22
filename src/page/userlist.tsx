@@ -1,7 +1,7 @@
-import Nav from "../nav/nav";
+import Nav from "./nav";
 import {useEffect, useState} from "react";
-import {WebClient} from "../../api/web/common";
-import {GetMemberRequest, GetMemberResponse, Member} from "../../api/pb/goodguy-web_pb";
+import {WebClient} from "../api/web/common";
+import {GetMemberRequest, GetMemberResponse, Member} from "../api/pb/goodguy-web_pb";
 import {
     Box, CircularProgress,
     Paper,
@@ -14,8 +14,8 @@ import {
     TableRow, TableSortLabel, Typography
 } from "@mui/material";
 import * as React from "react";
-import {CrawlClient} from "../../api/crawler/client";
-import {GetUserContestRecordRequest} from "../../api/pb/crawl_service_pb";
+import {CrawlClient} from "../api/crawler/client";
+import {GetUserContestRecordRequest} from "../api/pb/crawl_service_pb";
 
 function GetPlatformRating(platform: string, handle: string): number | undefined | null {
     const [rating, setRating] = useState<number | undefined | null>(undefined);
@@ -72,6 +72,7 @@ type UserListProps = {
 };
 
 export default function UserList(props: UserListProps): JSX.Element {
+    document.title = "用户列表";
     const [pageNo, setPageNo] = useState(props.pageNo || 1);
     const [pageSize, setPageSize] = useState(props.pageSize || 10);
     const [data, setData] = useState<GetMemberResponse | undefined>(undefined);
@@ -111,7 +112,6 @@ export default function UserList(props: UserListProps): JSX.Element {
         <Nav open={false} header={"用户列表"}>
             <Box sx={{width: '100%'}}>
                 <Paper sx={{width: '100%', mb: 2}}>
-                    TODO 排序功能
                     <TableContainer>
                         <Table sx={{minWidth: 750}} size="medium">
                             <TableHead>
@@ -127,7 +127,7 @@ export default function UserList(props: UserListProps): JSX.Element {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data && data.getMemberList().map((value, index) => {
+                                {data?.getMemberList().map((value, index) => {
                                     return (
                                         <TableRow hover key={index}>
                                             <TableCell>
@@ -155,7 +155,7 @@ export default function UserList(props: UserListProps): JSX.Element {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[10, 20]} component="div"
+                        rowsPerPageOptions={[10]} component="div"
                         count={data?.getSize() || 0}
                         rowsPerPage={pageSize}
                         page={data ? pageNo - 1 : 0}
@@ -167,6 +167,9 @@ export default function UserList(props: UserListProps): JSX.Element {
                             setPageSize(parseInt(e.target.value, 10));
                         }}/>
                 </Paper>
+                <Typography variant="caption" component="div" color="#000000AA">
+                    排序、筛选功能暂不可用{/* TODO */}
+                </Typography>
             </Box>
         </Nav>
     );
