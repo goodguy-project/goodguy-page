@@ -1,5 +1,5 @@
 import ReactECharts from "echarts-for-react";
-import {FormControl, InputLabel, MenuItem, Typography, Select} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Typography, Select, LinearProgress} from "@mui/material";
 import GetSubmitRecord from "../api/crawler/get_submit_record";
 import {UserSubmitRecord} from "../api/pb/crawl_service_pb";
 import {useEffect, useState} from "react";
@@ -64,7 +64,7 @@ export function HeatMap(props: HeatMapProps): JSX.Element {
             top: 40,
             left: 50,
             right: 30,
-            cellSize: ['auto', 30],
+            cellSize: ['auto', 33],
             range: props.year?.toString() || (new Date(Date.now())).getFullYear().toString(),
             itemStyle: {
                 borderWidth: 0.3,
@@ -85,6 +85,7 @@ export function HeatMap(props: HeatMapProps): JSX.Element {
 type ContestHeapMapProps = {
     platform: string
     handle: string
+    title?: string
 };
 
 function getYears(submitRecord: UserSubmitRecord | undefined | null): number[] {
@@ -113,7 +114,7 @@ function getYears(submitRecord: UserSubmitRecord | undefined | null): number[] {
 }
 
 export function ContestHeapMap(props: ContestHeapMapProps): JSX.Element {
-    const {platform, handle} = props;
+    const {platform, handle, title} = props;
     const [selectYear, setSelectYear] = useState<number | undefined>(undefined);
     const submitRecord = GetSubmitRecord(platform, handle);
     const years = getYears(submitRecord);
@@ -122,20 +123,24 @@ export function ContestHeapMap(props: ContestHeapMapProps): JSX.Element {
             setSelectYear(years[0]);
         }
     }, [years.length]);
-    if (submitRecord === undefined || submitRecord === null || years.length === 0 || selectYear === undefined) {
+    if (submitRecord === undefined || years.length === 0 || selectYear === undefined) {
         return (
             <>
-                <div style={{margin: '20px 0 0 0'}}>
-                    <Typography>CodeForces</Typography>
+                <div style={{textAlign: 'center'}}>
+                    <Typography>Data of {title || platform} Loading...</Typography>
                 </div>
-                <HeatMap/>
+                <LinearProgress />
             </>
         );
+    }
+    if (submitRecord === null) {
+        return <></>;
     }
     return (
         <>
             <div style={{textAlign: 'center'}}>
-                <Typography style={{display: 'inline-block', lineHeight: '88px'}}>CodeForces</Typography>
+                <Typography style={{display: 'inline-block', lineHeight: '88px'}}>{title || platform}</Typography>
+                <Typography style={{display: 'inline-block', lineHeight: '88px'}}>&nbsp;{handle}</Typography>
                 <FormControl sx={{ m: 2, minWidth: 120 }}>
                     <InputLabel>Year</InputLabel>
                     <Select

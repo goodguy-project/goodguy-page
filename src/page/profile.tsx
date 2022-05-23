@@ -14,7 +14,7 @@ import Nav from "./nav";
 import {styled} from "@mui/material/styles";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {ContestLine} from "../graph/line";
-import {ContestHeapMap, HeatMap} from "../graph/heatmap";
+import {ContestHeapMap} from "../graph/heatmap";
 
 type ProfileMainProps = {
     data: Member
@@ -55,6 +55,23 @@ const ProfileAccordionDetails = styled(AccordionDetails)(({theme}) => ({
     padding: theme.spacing(2),
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
+
+function UpdateElement(props: {sid: string}): JSX.Element {
+    const {sid} = props;
+    if (sid === '' || sid !== GetSid()) {
+        return <></>;
+    }
+    return (
+        <ProfileAccordion defaultExpanded={true}>
+            <ProfileAccordionSummary>
+                <Typography component="div">更新信息</Typography>
+            </ProfileAccordionSummary>
+            <ProfileAccordionDetails>
+                TODO
+            </ProfileAccordionDetails>
+        </ProfileAccordion>
+    );
+}
 
 function PaperElement(...children: ReactNode[]) {
     const size = '24px';
@@ -98,6 +115,7 @@ function ProfileMain(props: ProfileMainProps): JSX.Element {
                     <Typography component="div">Luogu ID：{data.getLuoguId().toString()}</Typography>
                 </ProfileAccordionDetails>
             </ProfileAccordion>
+            <UpdateElement sid={sid}/>
             <ProfileAccordion defaultExpanded={true}>
                 <ProfileAccordionSummary>
                     <Typography component="div">比赛经历</Typography>
@@ -128,9 +146,8 @@ function ProfileMain(props: ProfileMainProps): JSX.Element {
                     <Typography component="div">比赛经历</Typography>
                 </ProfileAccordionSummary>
                 <ProfileAccordionDetails>
-                    {PaperElement(
-                        <ContestHeapMap platform="codeforces" handle={data.getCodeforcesId().toString()}/>
-                    )}
+                    {PaperElement(<ContestHeapMap platform="codeforces" handle={data.getCodeforcesId().toString()} title="Codeforces"/>)}
+                    {PaperElement(<ContestHeapMap platform="vjudge" handle={data.getVjudgeId().toString()} title="Vjudge"/>)}
                 </ProfileAccordionDetails>
             </ProfileAccordion>
             {
