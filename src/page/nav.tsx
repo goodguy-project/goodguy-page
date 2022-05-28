@@ -175,7 +175,11 @@ function LoginDialog(props: DialogProps): JSX.Element {
                     }} label="用户名" fullWidth variant="standard" inputProps={{maxLength: 50}}/>
                     <TextField margin="none" onChange={(e) => {
                         setPwd(e.target.value);
-                    }} label="密码" type="password" fullWidth variant="standard"/>
+                    }} label="密码" type="password" fullWidth variant="standard" onKeyDown={(e) => {
+                        if (e.code === 'Enter') {
+                            doLogin();
+                        }
+                    }}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={doLogin}>登录</Button>

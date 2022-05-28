@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react';
 import GetContestRecord from "../api/crawler/get_contest_record";
+import {LinearProgress} from "@mui/material";
 
 export class Item {
     x: string
@@ -76,5 +77,10 @@ export function ContestLine(props: ContestLineProps) {
         data.push(new Item(`${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`, value.getRating()))
         return;
     });
-    return <Line title={platform} data={data}/>;
+    return (
+        <>
+            <Line title={platform} data={data}/>
+            {contestRecord === undefined ? <LinearProgress/> : <></>}
+        </>
+    );
 }

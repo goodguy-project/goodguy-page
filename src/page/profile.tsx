@@ -1,24 +1,23 @@
 import queryString from "query-string";
 import {useEffect, useState, ReactNode} from "react";
-import {GetSid, WebClient} from "../api/web/common";
-import {GetMemberRequest, Member} from "../api/pb/goodguy-web_pb";
+import {GetSid, GetToken, WebClient} from "../api/web/common";
+import {GetMemberRequest, Member, UpdateMemberRequest} from "../api/pb/goodguy-web_pb";
 import {
     Accordion,
     AccordionDetails,
     AccordionProps,
     AccordionSummary, AccordionSummaryProps,
-    CircularProgress, Paper,
-    Typography
+    CircularProgress, Paper, TextField, Box,
+    Typography, Button, Alert, Switch, FormControlLabel
 } from "@mui/material";
 import Nav from "./nav";
 import {styled} from "@mui/material/styles";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {ContestLine} from "../graph/line";
 import {ContestHeapMap} from "../graph/heatmap";
+import * as React from "react";
 
-type ProfileMainProps = {
-    data: Member
-};
+const wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
 
 const ProfileAccordion = styled((props: AccordionProps) => (
     <Accordion disableGutters elevation={0} square {...props}/>
@@ -56,21 +55,197 @@ const ProfileAccordionDetails = styled(AccordionDetails)(({theme}) => ({
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-function UpdateElement(props: {sid: string}): JSX.Element {
-    const {sid} = props;
-    if (sid === '' || sid !== GetSid()) {
-        return <></>;
-    }
-    return (
+
+function UpdateElement(props: { sid: string, data: Member }): JSX.Element {
+    const {sid, data} = props;
+    const [name, setName] = useState<string | undefined>(undefined);
+    const [school, setSchool] = useState<string | undefined>(undefined);
+    const [grade, setGrade] = useState<number | undefined>(undefined);
+    const [clazz, setClazz] = useState<string | undefined>(undefined);
+    const [luoguId, setLuoguId] = useState<string | undefined>(undefined);
+    const [codeforcesId, setCodeforcesId] = useState<string | undefined>(undefined);
+    const [atcoderId, setAtcoderId] = useState<string | undefined>(undefined);
+    const [codechefId, setCodechefId] = useState<string | undefined>(undefined);
+    const [nowcoderId, setNowcoderId] = useState<string | undefined>(undefined);
+    const [vjudgeId, setVjudgeId] = useState<string | undefined>(undefined);
+    const [leetcodeId, setLeetcodeId] = useState<string | undefined>(undefined);
+    const [email, setEmail] = useState<string | undefined>(undefined);
+    const [pwd, setPwd] = useState('');
+    const [newPwd, setNewPwd] = useState<string | undefined>(undefined);
+    const [teamName, setTeamName] = useState<string | undefined>(undefined);
+    const [alert, setAlert] = useState(<></>);
+    const [checked, setChecked] = useState<boolean>(data.getIsOfficial()?.getValue());
+    const onUpdateUser = () => {
+        const token = GetToken();
+        if (token === undefined) {
+            return;
+        }
+        if (sid === data.getSid()?.getValue() && pwd === '') {
+            setAlert(<Alert variant="outlined" severity="error" sx={{width: '30%'}} onClose={() => {
+                setAlert(<></>);
+            }}>
+                密码为空
+            </Alert>)
+            return;
+        }
+        const request = new UpdateMemberRequest().setPwd(pwd);
+        if (newPwd !== undefined) {
+            request.setNewPwd(newPwd);
+        }
+        const member = new Member().setSid(new wrappers_pb.StringValue().setValue(sid));
+        if (name !== undefined) {
+            member.setName(new wrappers_pb.StringValue().setValue(name));
+        }
+        if (school !== undefined) {
+            member.setSchool(new wrappers_pb.StringValue().setValue(school));
+        }
+        if (grade !== undefined) {
+            member.setGrade(new wrappers_pb.Int32Value().setValue(grade));
+        }
+        if (clazz !== undefined) {
+            member.setClazz(new wrappers_pb.StringValue().setValue(clazz));
+        }
+        if (luoguId !== undefined) {
+            member.setLuoguId(new wrappers_pb.StringValue().setValue(luoguId));
+        }
+        if (codeforcesId !== undefined) {
+            member.setCodeforcesId(new wrappers_pb.StringValue().setValue(codeforcesId));
+        }
+        if (atcoderId !== undefined) {
+            member.setAtcoderId(new wrappers_pb.StringValue().setValue(atcoderId));
+        }
+        if (codechefId !== undefined) {
+            member.setCodechefId(new wrappers_pb.StringValue().setValue(codechefId));
+        }
+        if (nowcoderId !== undefined) {
+            member.setNowcoderId(new wrappers_pb.StringValue().setValue(nowcoderId));
+        }
+        if (vjudgeId !== undefined) {
+            member.setVjudgeId(new wrappers_pb.StringValue().setValue(vjudgeId));
+        }
+        if (leetcodeId !== undefined) {
+            member.setLeetcodeId(new wrappers_pb.StringValue().setValue(leetcodeId));
+        }
+        if (email !== undefined) {
+            member.setEmail(new wrappers_pb.StringValue().setValue(email));
+        }
+        request.setMember(member);
+        WebClient.updateMember(request, {'token': token}, (err, response) => {
+            if (err) {
+                setAlert(<Alert variant="outlined" severity="error" sx={{width: '30%'}} onClose={() => {
+                    setAlert(<></>);
+                }}>
+                    更新信息错误：{err.message}
+                </Alert>);
+            } else {
+                window.location.reload();
+            }
+        });
+    };
+    const UpdateElementBox = (props: { children: ReactNode }) => {
+        const sx = {'& > :not(style)': {m: 1, width: '25ch'}};
+        return (
+            <Box component="form" sx={sx} noValidate autoComplete="off">
+                {props.children}
+            </Box>
+        );
+    };
+    const [form, setForm] = useState(<></>);
+    useEffect(() => {
+        setForm(
+            <>
+                <UpdateElementBox>
+                    <TextField variant="standard" label="姓名" defaultValue={data.getName().toString()} onChange={(e) => {
+                        setName(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="学校" defaultValue={data.getSchool().toString()} onChange={(e) => {
+                        setSchool(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="年级" type="number" defaultValue={data.getGrade().toString()} onChange={(e) => {
+                        setGrade(parseInt(e.target.value));
+                    }}/>
+                    <TextField variant="standard" label="班级" defaultValue={data.getClazz().toString()} onChange={(e) => {
+                        setClazz(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="Email" defaultValue={data.getClazz().toString()} onChange={(e) => {
+                        setEmail(e.target.value);
+                    }}/>
+                </UpdateElementBox>
+                <UpdateElementBox>
+                    <TextField variant="standard" label="Codeforces ID" defaultValue={data.getCodeforcesId().toString()} onChange={(e) => {
+                        setCodeforcesId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="AtCoder ID" defaultValue={data.getAtcoderId().toString()} onChange={(e) => {
+                        setAtcoderId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="CodeChef ID" defaultValue={data.getCodechefId().toString()} onChange={(e) => {
+                        setCodechefId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="NowCoder ID" defaultValue={data.getNowcoderId().toString()} onChange={(e) => {
+                        setNowcoderId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="Vjudge ID" defaultValue={data.getVjudgeId().toString()} onChange={(e) => {
+                        setVjudgeId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="LeetCode ID" defaultValue={data.getLeetcodeId().toString()} onChange={(e) => {
+                        setLeetcodeId(e.target.value);
+                    }}/>
+                    <TextField variant="standard" label="Luogu ID" defaultValue={data.getLuoguId().toString()} onChange={(e) => {
+                        setLuoguId(e.target.value);
+                    }}/>
+                </UpdateElementBox>
+                <UpdateElementBox>
+                    {
+                        sid === data.getSid().toString() ?
+                        <TextField variant="standard" label="密码" type="password" helperText=" " required={true}
+                                   onChange={(e) => {
+                                       setPwd(e.target.value);
+                                   }}/> : <></>
+                    }
+                    <TextField variant="standard" label="新密码" type="password" helperText="不填则不修改" onChange={(e) => {
+                        setNewPwd(e.target.value);
+                    }}/>
+                </UpdateElementBox>
+            </>
+        );
+    }, []);
+    return sid === data.getSid().toString() || sid === 'admin' ? (
         <ProfileAccordion defaultExpanded={true}>
             <ProfileAccordionSummary>
                 <Typography component="div">更新信息</Typography>
             </ProfileAccordionSummary>
             <ProfileAccordionDetails>
-                TODO
+                {alert}
+                {form}
+                {
+                    sid === 'admin' ? (
+                        <Box component="form" noValidate autoComplete="off">
+                            <FormControlLabel label="是否校队成员" control={
+                                <Switch checked={checked} onChange={(e) => {
+                                    const checked = e.target.checked;
+                                    setChecked(checked);
+                                    if (!checked) {
+                                        setTeamName(undefined);
+                                    }
+                                }}/>
+                            }/>
+                            {
+                                checked ? (
+                                    <TextField variant="standard" label="队名" required={true} onChange={(e) => {
+                                        setTeamName(e.target.value);
+                                    }}/>
+                                ) : <></>
+                            }
+                        </Box>
+                    ) : <></>
+                }
+                {teamName}
+                <UpdateElementBox>
+                    <Button variant="contained" style={{width: '1em'}} onClick={onUpdateUser}>确定</Button>
+                </UpdateElementBox>
             </ProfileAccordionDetails>
         </ProfileAccordion>
-    );
+    ) : <></>;
 }
 
 function PaperElement(...children: ReactNode[]) {
@@ -88,9 +263,8 @@ function PaperElement(...children: ReactNode[]) {
     return r;
 }
 
-function ProfileMain(props: ProfileMainProps): JSX.Element {
-    const data = props.data;
-    const sid = GetSid();
+function ProfileMain(props: { sid: string, data: Member }): JSX.Element {
+    const {sid, data} = props;
     return (
         <div>
             <ProfileAccordion defaultExpanded={true}>
@@ -115,29 +289,16 @@ function ProfileMain(props: ProfileMainProps): JSX.Element {
                     <Typography component="div">Luogu ID：{data.getLuoguId().toString()}</Typography>
                 </ProfileAccordionDetails>
             </ProfileAccordion>
-            <UpdateElement sid={sid}/>
             <ProfileAccordion defaultExpanded={true}>
                 <ProfileAccordionSummary>
                     <Typography component="div">比赛经历</Typography>
                 </ProfileAccordionSummary>
                 <ProfileAccordionDetails>
                     {PaperElement(
-                        <>
-                            {/*<Typography component="div">Codeforces</Typography>*/}
-                            <ContestLine platform="codeforces" handle={data.getCodeforcesId().toString()}/>
-                        </>,
-                        <>
-                            {/*<Typography component="div">AtCoder</Typography>*/}
-                            <ContestLine platform="atcoder" handle={data.getAtcoderId().toString()}/>
-                        </>,
-                        <>
-                            {/*<Typography component="div">Nowcoder</Typography>*/}
-                            <ContestLine platform="nowcoder" handle={data.getNowcoderId().toString()}/>
-                        </>,
-                        <>
-                            {/*<Typography component="div">Leetcode</Typography>*/}
-                            <ContestLine platform="leetcode" handle={data.getLeetcodeId().toString()}/>
-                        </>,
+                        <ContestLine platform="codeforces" handle={data.getCodeforcesId().toString()}/>,
+                        <ContestLine platform="atcoder" handle={data.getAtcoderId().toString()}/>,
+                        <ContestLine platform="nowcoder" handle={data.getNowcoderId().toString()}/>,
+                        <ContestLine platform="leetcode" handle={data.getLeetcodeId().toString()}/>,
                     )}
                 </ProfileAccordionDetails>
             </ProfileAccordion>
@@ -150,18 +311,7 @@ function ProfileMain(props: ProfileMainProps): JSX.Element {
                     {PaperElement(<ContestHeapMap platform="vjudge" handle={data.getVjudgeId().toString()} title="Vjudge"/>)}
                 </ProfileAccordionDetails>
             </ProfileAccordion>
-            {
-                sid === data.getSid().toString() ? (
-                    <ProfileAccordion defaultExpanded={true}>
-                        <ProfileAccordionSummary>
-                            <Typography component="div">更新信息</Typography>
-                        </ProfileAccordionSummary>
-                        <ProfileAccordionDetails>
-                            <Typography>{data.getSid().toString()}</Typography>
-                        </ProfileAccordionDetails>
-                    </ProfileAccordion>
-                ) : null
-            }
+            <UpdateElement sid={sid} data={data}/>
         </div>
     );
 }
@@ -171,6 +321,7 @@ type ProfileProps = {};
 export default function Profile(props: ProfileProps): JSX.Element {
     const query = queryString.parse(window.location.search);
     const sid = typeof query['sid'] === 'string' ? query['sid'] : '';
+    const userSid = GetSid();
     document.title = `用户 - ${sid}`;
     const [data, setData] = useState<Member | null | undefined>(undefined);
     useEffect(() => {
@@ -185,7 +336,7 @@ export default function Profile(props: ProfileProps): JSX.Element {
     }, []);
     return (
         <Nav open={false} header={sid}>
-            {data === undefined ? <CircularProgress/> : data === null ? <>404</> : <ProfileMain data={data}/>}
+            {data === undefined ? <CircularProgress/> : data === null ? <>404</> : <ProfileMain sid={userSid} data={data}/>}
         </Nav>
     );
 }

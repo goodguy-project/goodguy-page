@@ -6,6 +6,10 @@ export default function GetSubmitRecord(platform: string, handle: string, delay?
     const request = new GetUserSubmitRecordRequest().setPlatform(platform).setHandle(handle);
     const [result, setResult] = useState<UserSubmitRecord | undefined | null>(undefined);
     useEffect(() => {
+        if (handle === '') {
+            setResult(null);
+            return;
+        }
         CrawlClient.getUserSubmitRecord(request, {}, (err, response) => {
             setTimeout(() => {
                 if (err) {
