@@ -86,11 +86,7 @@ export default function UserList(props: UserListProps): JSX.Element {
             return err ? console.log(err) : setData(response);
         });
     }, [pageNo, pageSize]);
-    type TableHeadCellProps = {
-        id: string,
-        label: string,
-    };
-    const TableHeadCell = (props: TableHeadCellProps) => {
+    const TableHeadCell = (props: { id: string, label: string }) => {
         const {id, label} = props;
         return (
             <TableCell key={id}>
@@ -108,8 +104,8 @@ export default function UserList(props: UserListProps): JSX.Element {
             </TableCell>
         );
     };
-    return (
-        <Nav open={false} header={"用户列表"}>
+    const UserListMain = () => {
+        return (
             <Box sx={{width: '100%'}}>
                 <Paper sx={{width: '100%', mb: 2}}>
                     <TableContainer>
@@ -140,7 +136,7 @@ export default function UserList(props: UserListProps): JSX.Element {
                                             </TableCell>
                                             <TableCell>{value.getName().toString()}</TableCell>
                                             <TableCell>{value.getGrade().toString()}</TableCell>
-                                            <TableCell>{value.getIsOfficial().toString()}</TableCell>
+                                            <TableCell>{value.getIsOfficial()?.getValue() ? '是' : '否'}</TableCell>
                                             <TableCell>{value.getCodeforcesId().toString()}</TableCell>
                                             <TableCell><CodeforcesRatingElement
                                                 handle={value.getCodeforcesId().toString()}/></TableCell>
@@ -155,12 +151,12 @@ export default function UserList(props: UserListProps): JSX.Element {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[10]} component="div"
+                        rowsPerPageOptions={[5, 10, 20]} component="div"
                         count={data?.getSize() || 0}
                         rowsPerPage={pageSize}
                         page={data ? pageNo - 1 : 0}
                         onPageChange={(e, newPageNo) => {
-                            setPageNo(newPageNo);
+                            setPageNo(newPageNo + 1);
                         }}
                         onRowsPerPageChange={(e) => {
                             setPageNo(1);
@@ -171,6 +167,11 @@ export default function UserList(props: UserListProps): JSX.Element {
                     排序、筛选功能暂不可用{/* TODO */}
                 </Typography>
             </Box>
+        );
+    };
+    return (
+        <Nav open={false} header={"用户列表"}>
+            {data ? <UserListMain/> : <CircularProgress/>}
         </Nav>
     );
 }

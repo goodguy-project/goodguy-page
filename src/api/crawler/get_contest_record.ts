@@ -2,7 +2,7 @@ import {GetUserContestRecordRequest, UserContestRecord} from "../pb/crawl_servic
 import {useEffect, useState} from "react";
 import {CrawlClient} from "./client";
 
-export default function GetContestRecord(platform: string, handle: string, delay?: number): UserContestRecord | undefined | null {
+function GetContestRecordInner(platform: string, handle: string, delay?: number): UserContestRecord | undefined | null {
     const request = new GetUserContestRecordRequest();
     request.setPlatform(platform).setHandle(handle);
     const [result, setResult] = useState<UserContestRecord | undefined | null>(undefined);
@@ -24,4 +24,13 @@ export default function GetContestRecord(platform: string, handle: string, delay
         }, delay);
     }, [platform, handle]);
     return result;
+}
+
+const set = new Set(['codeforces', 'atcoder', 'nowcoder', 'luogu']);
+
+export default function GetContestRecord(platform: string, handle: string, delay?: number): UserContestRecord | undefined | null {
+    if (set.has(platform)) {
+        return GetContestRecordInner(platform, handle, delay);
+    }
+    return null;
 }

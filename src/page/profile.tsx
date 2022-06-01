@@ -92,7 +92,7 @@ function UpdateElement(props: { sid: string, data: Member }): JSX.Element {
         if (newPwd !== undefined) {
             request.setNewPwd(newPwd);
         }
-        const member = new Member().setSid(new wrappers_pb.StringValue().setValue(sid));
+        const member = new Member().setSid(new wrappers_pb.StringValue().setValue(data.getSid()?.getValue() || ''));
         if (name !== undefined) {
             member.setName(new wrappers_pb.StringValue().setValue(name));
         }
@@ -128,6 +128,10 @@ function UpdateElement(props: { sid: string, data: Member }): JSX.Element {
         }
         if (email !== undefined) {
             member.setEmail(new wrappers_pb.StringValue().setValue(email));
+        }
+        member.setIsOfficial(new wrappers_pb.BoolValue().setValue(checked));
+        if (teamName !== undefined) {
+            member.setTeamName(new wrappers_pb.StringValue().setValue(teamName));
         }
         request.setMember(member);
         WebClient.updateMember(request, {'token': token}, (err, response) => {
@@ -239,7 +243,6 @@ function UpdateElement(props: { sid: string, data: Member }): JSX.Element {
                         </Box>
                     ) : <></>
                 }
-                {teamName}
                 <UpdateElementBox>
                     <Button variant="contained" style={{width: '1em'}} onClick={onUpdateUser}>确定</Button>
                 </UpdateElementBox>

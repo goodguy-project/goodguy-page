@@ -1,9 +1,9 @@
 import {GoodguyWebServiceClient} from "../pb/goodguy-web_grpc_web_pb";
 import {useEffect, useState} from "react";
 import {CheckTokenRequest} from "../pb/goodguy-web_pb";
+import {WebHost} from "../../settings";
 
-const hostname = 'http://127.0.0.1:9853';
-export const WebClient = new GoodguyWebServiceClient(hostname);
+export const WebClient = new GoodguyWebServiceClient(WebHost);
 
 const TokenKeyName = 'goodguy-web-token';
 
