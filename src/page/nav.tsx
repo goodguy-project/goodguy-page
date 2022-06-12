@@ -357,7 +357,8 @@ export default function Nav(props: NavProps) {
         <>
             <PageElement text="首页" href="/"/>
             <PageElement text="用户列表" href="/user-list"/>
-            <PageElement text="校队成员列表" href="/official-list"/>
+            {/* TODO 校队成员列表暂缓 */}
+            {/*<PageElement text="校队成员列表" href="/official-list"/>*/}
         </>
     );
 

@@ -14,8 +14,9 @@ import Nav from "./nav";
 import {styled} from "@mui/material/styles";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import {ContestLine} from "../graph/line";
-import {ContestHeapMap} from "../graph/heatmap";
+import {DailyHeapMap} from "../graph/heatmap";
 import * as React from "react";
+import {LanguageDistributed} from "../graph/distributed";
 
 const wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
 
@@ -266,6 +267,11 @@ function PaperElement(...children: ReactNode[]) {
     return r;
 }
 
+function SubmitRecordGraph(props: { platform: string, handle: string }): JSX.Element {
+    const {platform, handle} = props;
+    return <></>;
+}
+
 function ProfileMain(props: { sid: string, data: Member }): JSX.Element {
     const {sid, data} = props;
     return (
@@ -307,11 +313,19 @@ function ProfileMain(props: { sid: string, data: Member }): JSX.Element {
             </ProfileAccordion>
             <ProfileAccordion defaultExpanded={true}>
                 <ProfileAccordionSummary>
-                    <Typography component="div">比赛经历</Typography>
+                    <Typography component="div">做题日历图</Typography>
                 </ProfileAccordionSummary>
                 <ProfileAccordionDetails>
-                    {PaperElement(<ContestHeapMap platform="codeforces" handle={data.getCodeforcesId().toString()} title="Codeforces"/>)}
-                    {PaperElement(<ContestHeapMap platform="vjudge" handle={data.getVjudgeId().toString()} title="Vjudge"/>)}
+                    {PaperElement(<DailyHeapMap platform="codeforces" handle={data.getCodeforcesId().toString()} title="Codeforces"/>)}
+                    {PaperElement(<DailyHeapMap platform="vjudge" handle={data.getVjudgeId().toString()} title="Vjudge"/>)}
+                </ProfileAccordionDetails>
+            </ProfileAccordion>
+            <ProfileAccordion defaultExpanded={true}>
+                <ProfileAccordionSummary>
+                    <Typography component="div">做题情况</Typography>
+                </ProfileAccordionSummary>
+                <ProfileAccordionDetails>
+                    {PaperElement(<LanguageDistributed platform="codeforces" handle={data.getCodeforcesId().toString()}/>)}
                 </ProfileAccordionDetails>
             </ProfileAccordion>
             <UpdateElement sid={sid} data={data}/>

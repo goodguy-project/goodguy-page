@@ -103,17 +103,18 @@ function getYears(submitRecord: UserSubmitRecord | undefined | null): number[] {
         return [currentYear];
     }
     const minYear = Math.min(...yearsArray);
+    const maxYear = Math.max(...yearsArray);
     if (minYear < 0 || minYear > 9999) {
         return [currentYear];
     }
     const result: number[] = [];
-    for (let year = currentYear; year >= minYear; year--) {
+    for (let year = maxYear; year >= minYear; year--) {
         result.push(year);
     }
     return result;
 }
 
-export function ContestHeapMap(props: ContestHeapMapProps): JSX.Element {
+export function DailyHeapMap(props: ContestHeapMapProps): JSX.Element {
     const {platform, handle, title} = props;
     const [selectYear, setSelectYear] = useState<number | undefined>(undefined);
     const submitRecord = GetSubmitRecord(platform, handle);

@@ -3,7 +3,8 @@ import {useEffect, useState} from "react";
 import {WebClient} from "../api/web/common";
 import {GetMemberRequest, GetMemberResponse, Member} from "../api/pb/goodguy-web_pb";
 import {
-    Box, CircularProgress,
+    Box, Button,
+    CircularProgress,
     Paper,
     Table,
     TableBody,
@@ -11,7 +12,9 @@ import {
     TableContainer,
     TableHead,
     TablePagination,
-    TableRow, TableSortLabel, Typography
+    TableRow,
+    TextField,
+    Typography
 } from "@mui/material";
 import * as React from "react";
 import {CrawlClient} from "../api/crawler/client";
@@ -86,22 +89,45 @@ export default function UserList(props: UserListProps): JSX.Element {
             return err ? console.log(err) : setData(response);
         });
     }, [pageNo, pageSize]);
-    const TableHeadCell = (props: { id: string, label: string }) => {
-        const {id, label} = props;
+    const TableHeadCell = (props: { idx: string, label: string }) => {
+        const {idx, label} = props;
         return (
-            <TableCell key={id}>
-                <TableSortLabel active={orderBy === id} direction={orderBy === id ? order : 'asc'}
-                                onClick={() => {
-                                    if (orderBy === id) {
-                                        setOrder(order === 'asc' ? 'desc' : 'asc');
-                                    } else {
-                                        setOrder('asc');
-                                    }
-                                    setOrderBy(id);
-                                }}>
-                    {label}
-                </TableSortLabel>
+            <TableCell key={idx}>
+                {/* FIXME 这里要做排序吗 */}
+                {/*<TableSortLabel*/}
+                {/*    active={orderBy === idx}*/}
+                {/*    direction={orderBy === idx ? order : 'asc'}*/}
+                {/*    onClick={() => {*/}
+                {/*        if (orderBy === idx) {*/}
+                {/*            setOrder(order === 'asc' ? 'desc' : 'asc');*/}
+                {/*        } else {*/}
+                {/*            setOrder('asc');*/}
+                {/*        }*/}
+                {/*        setOrderBy(idx);*/}
+                {/*    }}*/}
+                {/*>*/}
+                {label}
+                {/*</TableSortLabel>*/}
             </TableCell>
+        );
+    };
+    const UserListFilterGroup = () => {
+        // TODO 筛选功能暂缓
+        return <></>;
+        return (
+            <Box
+                component="form"
+                sx={{
+                    '& > :not(style)': {m: 1},
+                }}
+                noValidate
+                autoComplete="off"
+            >
+                <TextField id="outlined-basic" label="Outlined" variant="outlined"/>
+                <TextField id="filled-basic" label="Filled" variant="filled"/>
+                <TextField id="standard-basic" label="Standard" variant="standard"/>
+                <Button variant="contained">筛选</Button>
+            </Box>
         );
     };
     const UserListMain = () => {
@@ -112,14 +138,14 @@ export default function UserList(props: UserListProps): JSX.Element {
                         <Table sx={{minWidth: 750}} size="medium">
                             <TableHead>
                                 <TableRow>
-                                    <TableHeadCell id="sid" label="用户名"/>
-                                    <TableHeadCell id="name" label="姓名"/>
-                                    <TableHeadCell id="grade" label="年级"/>
-                                    <TableHeadCell id="is_official" label="是否校队成员"/>
-                                    <TableHeadCell id="codeforces_id" label="Codeforces ID"/>
-                                    <TableHeadCell id="codeforces_rating" label="Codeforces Rating"/>
-                                    <TableHeadCell id="atcoder_id" label="AtCoder ID"/>
-                                    <TableHeadCell id="atcoder_rating" label="AtCoder Rating"/>
+                                    <TableHeadCell idx="sid" label="用户名"/>
+                                    <TableHeadCell idx="name" label="姓名"/>
+                                    <TableHeadCell idx="grade" label="年级"/>
+                                    <TableHeadCell idx="is_official" label="是否校队成员"/>
+                                    <TableHeadCell idx="codeforces_id" label="Codeforces ID"/>
+                                    <TableHeadCell idx="codeforces_rating" label="Codeforces Rating"/>
+                                    <TableHeadCell idx="atcoder_id" label="AtCoder ID"/>
+                                    <TableHeadCell idx="atcoder_rating" label="AtCoder Rating"/>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -163,15 +189,19 @@ export default function UserList(props: UserListProps): JSX.Element {
                             setPageSize(parseInt(e.target.value, 10));
                         }}/>
                 </Paper>
-                <Typography variant="caption" component="div" color="#000000AA">
-                    排序、筛选功能暂不可用{/* TODO */}
-                </Typography>
             </Box>
         );
     };
     return (
         <Nav open={false} header={"用户列表"}>
-            {data ? <UserListMain/> : <CircularProgress/>}
+            {
+                data ? (
+                    <>
+                        <UserListFilterGroup/>
+                        <UserListMain/>
+                    </>
+                ) : <CircularProgress/>
+            }
         </Nav>
     );
 }
