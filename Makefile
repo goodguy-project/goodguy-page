@@ -5,12 +5,23 @@ client:
 	cd src/api/pb && protoc -I . goodguy-web.proto   --js_out=import_style=commonjs,binary:. --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:.
 	cd src/api/pb && protoc -I . crawl_service.proto --js_out=import_style=commonjs,binary:. --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:.
 
-debug:
-	react-scripts start
+docker.build:
+	docker build -t goodguy-page .
 
-build:
-	react-scripts build
+docker.run:
+	-docker network create goodguy-net
+	docker run -p 80:80 -dit --name="goodguy-page" --restart=always --network goodguy-net --network-alias goodguy-page goodguy-page
 
-deploy:
-	react-scripts build
-	serve -s build -l 80
+docker.deploy:
+	make docker.build
+	make docker.run
+
+docker.clean:
+	-docker stop $$(docker ps -a -q --filter="name=goodguy-page")
+	-docker rm $$(docker ps -a -q --filter="name=goodguy-page")
+	-FOR /f "usebackq tokens=*" %%i IN (`docker ps -q -a --filter="name=goodguy-page"`) DO docker stop %%i
+	-FOR /f "usebackq tokens=*" %%i IN (`docker ps -q -a --filter="name=goodguy-page"`) DO docker rm %%i
+
+docker.restart:
+	make docker.clean
+	make docker.deploy
